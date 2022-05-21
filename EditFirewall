@@ -8,7 +8,7 @@ cyan="\033[0;36m"
 yellow="\033[0;37m"
 f="\033[0m"
 
-invalidOption="${red}>>> PORTA INVÁLIDA!$f";
+invalidOption="dddd" #${red}>>> PORTA INVÁLIDA!$f";
 #logo="${yellow}RDY ${red}SOFTWARE ${yellow}{ ${red}} ${cyan}21/05/2022$f";
 
 logo="Test"
