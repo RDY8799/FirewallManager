@@ -12,7 +12,8 @@ invalidOption="${red}>>> PORTA INVÁLIDA!$f";
 logo="${yellow}RDY ${red}SOFTWARE ${yellow}{${red}} ${cyan}21/05/2022$f";
 
 function checkSudo(){
-if [ $(id -u) -eq 0 ]
+
+if [ $(id -u) -eq 0 ];
 then
 	clear
 else
@@ -33,8 +34,6 @@ fi
 }
 
 checkSudo
-
-
 
 function closePort(){
 	
@@ -77,10 +76,10 @@ echo -e "Confirmar: ${red}REMOVER ${yellow}porta ${red}${port} ${yellow}no proto
 function closePortStart(){
 
 echo -e "$logo";
-echo -e "${cyan}ABRIR PORTAS NO FIREWALL$f";
+echo -e "${cyan}Fechar PORTAS NO FIREWALL$f";
 echo -e "Instale o firewalld se não tiver"
 echo -e ""
-echo -e "Digite a porta que deseja abrir\nEx: 80 ou 5900-5910"; 
+echo -e "Digite a porta que deseja fechar"; 
 read -p "Porta: " port
 ####
 
@@ -156,7 +155,7 @@ echo -e "Confirmar: Abrir porta ${port} no protocolo ${prot}?"
 
 function openPortStart(){
 
-echo -e "${red}RDY SOFTWARE {} 20/05/2022$f";
+echo -e "$logo";
 echo -e "${cyan}ABRIR PORTAS NO FIREWALL$f";
 echo -e "Instale o firewalld se não tiver"
 echo -e ""
@@ -197,7 +196,7 @@ function listOption(){
 running=$(firewall-cmd --state)
 zone=$(firewall-cmd --get-default-zone)
 
-echo -e "${red}RDY SOFTWARE {} 21/05/2022$f";
+echo -e "$logo";
 echo -e "${cyan}>>>> FIREWALL MANAGER <<<<$f";
 echo -e "${yellow}Firewall status: ${green}$running$f"
 echo -e "${yellow}Zone: ${green}$zone$f"
