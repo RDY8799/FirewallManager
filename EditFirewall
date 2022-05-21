@@ -8,6 +8,9 @@ cyan="\033[0;36m"
 yellow="\033[0;37m"
 f="\033[0m";
 
+invalidOption="${red}>>> PORTA INVÁLIDA!$f";
+logo="${yellow}RDY ${red}SOFTWARE ${yellow}{${red}} ${cyan}21/05/2022$f";
+
 function checkSudo(){
 if [ $(id -u) -eq 0 ]
 then
@@ -31,6 +34,85 @@ fi
 
 checkSudo
 
+
+
+function closePort(){
+	
+	# protocol: 1 = tcp, 2 = udp
+	case $2 in
+	1 | 01)
+	prot="tcp"
+	;;
+	2 | 02)
+	prot="udp"
+	;;
+	*) echo -e "$invalidOption"
+	;;
+	
+	esac
+
+echo -e "";
+echo -e "Confirmar: ${red}REMOVER ${yellow}porta ${red}${port} ${yellow}no protocolo ${red}${prot}${yellow}?$f"
+	echo -e "[S/N]"; read -p ": " option
+	case $option in
+	"s" | "S")
+	firewall-cmd --zone=public --permanent --remove-port=${port}/${prot}
+	echo -e "${cyan}RELOADING FIREWALL...$f"
+	firewall-cmd --reload
+	echo -e ""
+	echo -e "${green}FINALIZADO!!$f"
+	echo -e ""
+	exit
+	;;
+	"n" | "N")
+	echo -e "${red}ABORTAR!$f";
+	exit
+	;;
+	*) echo -e "$invalidOption"
+	;;
+	
+	esac
+}	
+
+function closePortStart(){
+
+echo -e "$logo";
+echo -e "${cyan}ABRIR PORTAS NO FIREWALL$f";
+echo -e "Instale o firewalld se não tiver"
+echo -e ""
+echo -e "Digite a porta que deseja abrir\nEx: 80 ou 5900-5910"; 
+read -p "Porta: " port
+####
+
+if [ -z "$port" ]; then 
+	echo -e "${red}>>> PORTA INVÁLIDA!$f";
+	exit
+fi
+
+####
+echo -e ""
+####
+echo -e "Escolha o protocolo"
+echo -e "[01] TCP"
+echo -e "[02] UDP"
+read -p "1-2: " protocol
+
+case $protocol in
+1|01)
+   closePort $port $protocol
+   ;;
+2|02)
+   closePort $port $protocol
+   ;;
+*) 
+   echo -e "$invalidOption"
+   exit
+   ;;
+esac
+
+}
+
+###########################################################
 
 
 
@@ -66,31 +148,11 @@ echo -e "Confirmar: Abrir porta ${port} no protocolo ${prot}?"
 	echo -e "${red}ABORTAR!$f";
 	exit
 	;;
-	*) echo -e "${red}OPÇÃO INVÁLIDA!$f"
+	*) echo -e "$invalidOption"
 	;;
 	
 	esac
 }	
-
-function listOption(){
-running=(firewall-cmd --state)
-zone=(firewall-cmd --get-default-zone)
-
-echo -e "${red}RDY SOFTWARE {} 20/05/2022$f";
-echo -e "${cyan}ABRIR PORTAS NO FIREWALL$f";
-echo -e "${yellow}Firewall status: ${green}$running$f"
-echo -e "${yellow}Zone: ${green}$zone$f"
-echo -e ""
-echo -e "{yellow}[01] Abrir porta$f"
-echo -e "{yellow}[02] Bloquear porta$f"
-echo -e "{yellow}[03] Listar portas$f"
-echo -e "Digite a porta que deseja abrir"; 
-read -p "Porta: " port
-
-#sudo firewall-cmd --zone=public --list-ports
-    
-}
-
 
 function openPortStart(){
 
@@ -123,14 +185,54 @@ case $protocol in
    openPort $port $protocol
    ;;
 *) 
-   echo -e "${red}OPÇÃO INVÁLIDA!$f"
+   echo -e "$invalidOption"
    exit
    ;;
 esac
 
 }
 
+function listOption(){
+
+running=(firewall-cmd --state)
+zone=(firewall-cmd --get-default-zone)
+
+echo -e "${red}RDY SOFTWARE {} 21/05/2022$f";
+echo -e "${cyan}>>>> FIREWALL MANAGER <<<<$f";
+echo -e "${yellow}Firewall status: ${green}$running$f"
+echo -e "${yellow}Zone: ${green}$zone$f"
+echo -e ""
+echo -e "{yellow}[01] Abrir porta$f"
+echo -e "{yellow}[02] Bloquear porta$f"
+echo -e "{yellow}[03] Listar portas$f"
+echo -e ""; 
+read -p "Escolha a opção[01-03]: " op
+
+
+case $op in
+1|01) 
+openPortStart
+;;
+2|02)
+closePortStart
+;;
+
+3|03)
+firewall-cmd --zone=public --list-ports
+;;
+
+*)
+ echo -e "$invalidOption"
+   exit
+;;
+
+esac
+
+#sudo firewall-cmd --zone=public --list-ports
+    
+}
+
 #listar portas
 # firewall-cmd --zone=public --list-ports
 
-openPortStart
+listOption
