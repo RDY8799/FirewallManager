@@ -11,29 +11,7 @@ f="\033[0m"
 invalidOption="${red}>>> PORTA INVÁLIDA!$f";
 logo="${yellow}RDY ${red}SOFTWARE ${yellow}{ ${red}} ${cyan}21/05/2022$f";
 
-function checkSudo(){
 
-if [ $(id -u) -eq 0 ];
-then
-	clear
-else
-	if echo $(id) |grep sudo > /dev/null
-	then
-	clear
-	echo -e "\033[1;37mVocê não é root"
-	echo -e "\033[1;37mSeu usuário está no grupo sudo"
-	echo -e "\033[1;37mPara tornar-se um usuário root execute \033[1;31msudo su\033[1;37m ou execute \033[1;31msudo $0\033[0m"
-	exit
-	else
-	clear
-	echo -e "Você não está como usuario root, nem com seus direitos (sudo)\nPara tornar-se um usuário root execute \033[1;31msu\033[0m e digite sua senha root"
-	exit
-	fi
-fi
-
-}
-
-checkSudo
 
 
 
